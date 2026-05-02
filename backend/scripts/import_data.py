@@ -151,6 +151,7 @@ def import_data(limit: int | None = None):
     # 2. DB bağlantısı
     log.info("\n[2/5] Veritabanına bağlanılıyor...")
     conn = get_connection()
+    conn.autocommit = True
     cursor = conn.cursor()
 
     # 3. Var olan verileri temizle (yeniden import)
@@ -220,10 +221,8 @@ def import_data(limit: int | None = None):
         except mysql.connector.Error as e:
             log.warning(f"  Satır {row_id} atlandı: {e}")
             skipped += 1
-            conn.rollback()
+            # conn.rollback() yapılmamalı, yoksa önceki tüm başarılı satırlar silinir.
             continue
-
-    conn.commit()
 
     # 5. Özet
     log.info("\n[5/5] Import tamamlandı!")
