@@ -1,29 +1,35 @@
 <template>
-  <div class="search-container">
-    <form @submit.prevent="handleSearch" class="search-form glass-card">
-      <div class="input-group">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  <div class="w-full flex flex-col items-center">
+    <form @submit.prevent="handleSearch" class="w-full max-w-3xl relative mb-6 group">
+      <input 
+        v-model="query"
+        type="text"
+        dir="auto"
+        placeholder="Niyet hakkında hadis ara... أو ابحث بالعربية"
+        class="w-full h-16 bg-surface-container-high border border-outline-variant rounded-full pl-6 pr-16 text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300 font-body-main text-body-main"
+      />
+      <button 
+        type="submit" 
+        :disabled="isLoading"
+        class="absolute right-2 top-2 h-12 w-12 bg-primary rounded-full flex items-center justify-center text-[#0F1923] hover:bg-primary-fixed transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <span v-if="isLoading" class="loader"></span>
+        <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
         </svg>
-        <input 
-          type="text" 
-          v-model="query" 
-          placeholder="Ara... (Örn: fasting in ramadan)"
-          class="search-input"
-          autofocus
-        />
-        <select v-model="language" class="lang-select">
-          <option value="auto">🌍 Otomatik</option>
-          <option value="ar">🇸🇦 Arapça</option>
-          <option value="en">🇬🇧 İngilizce</option>
-        </select>
-        <button type="submit" class="search-btn" :disabled="isLoading">
-          <span v-if="isLoading" class="loader"></span>
-          <span v-else>Ara</span>
-        </button>
-      </div>
+      </button>
     </form>
+
+    <div class="flex items-center justify-center gap-2 mb-6 w-full max-w-3xl">
+      <div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider bg-surface-container-high px-3 py-1 rounded-full border border-outline-variant flex items-center">
+        <span class="mr-2">DİL:</span>
+        <select v-model="language" class="bg-transparent text-on-surface-variant outline-none cursor-pointer">
+          <option value="auto">Otomatik</option>
+          <option value="ar">Arapça</option>
+          <option value="en">İngilizce</option>
+        </select>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -47,128 +53,16 @@ const handleSearch = () => {
 </script>
 
 <style scoped>
-.search-container {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 10;
-}
-
-.search-form {
-  padding: 0.5rem;
-  border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.85);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.search-form:focus-within {
-  transform: scale(1.02);
-  box-shadow: 0 12px 40px rgba(45, 90, 39, 0.2);
-  border-color: var(--color-primary-light);
-}
-
-.input-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-}
-
-.search-icon {
-  width: 24px;
-  height: 24px;
-  color: var(--color-text-muted);
-  margin-left: 1rem;
-}
-
-.search-input {
-  flex: 1;
-  background: transparent;
-  padding: 1rem 0.5rem;
-  font-size: 1.125rem;
-  color: var(--color-text-main);
-  border: none;
-}
-
-.search-input::placeholder {
-  color: #99A394;
-}
-
-.lang-select {
-  background: var(--color-surface-dim);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.lang-select:hover {
-  background: #E8EBE3;
-  border-color: var(--color-primary-light);
-}
-
-.search-btn {
-  background: var(--color-primary);
-  color: white;
-  padding: 0.75rem 2rem;
-  border-radius: var(--radius-pill);
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.search-btn:hover:not(:disabled) {
-  background: var(--color-primary-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(45, 90, 39, 0.3);
-}
-
-.search-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
 .loader {
   width: 20px;
   height: 20px;
-  border: 3px solid rgba(255,255,255,0.3);
+  border: 3px solid rgba(15, 25, 35, 0.3);
   border-radius: 50%;
-  border-top-color: white;
+  border-top-color: #0F1923;
   animation: spin 1s ease-in-out infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
-}
-
-/* Mobile responsive */
-@media (max-width: 600px) {
-  .search-form {
-    border-radius: var(--radius-md);
-    padding: 1rem;
-  }
-  .input-group {
-    flex-direction: column;
-  }
-  .search-icon {
-    display: none;
-  }
-  .search-input {
-    width: 100%;
-    padding: 0.5rem;
-    text-align: center;
-  }
-  .lang-select, .search-btn {
-    width: 100%;
-  }
 }
 </style>
