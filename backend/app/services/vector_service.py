@@ -1,0 +1,90 @@
+"""
+Qdrant Vektör Arama Servisi
+============================
+Semantic search: sorgu → embedding → Qdrant nearest neighbors
+"""
+
+from functools import lru_cache
+
+from qdrant_client import QdrantClient
+from qdrant_client.models import Filter, SearchRequest
+from sentence_transformers import SentenceTransformer
+
+from app.config import settings
+
+
+# ── Singleton: Model ve Client (uygulama boyu bir kez yüklenir) ──────────────
+
+@lru_cache(maxsize=1)
+def get_embedding_model() -> SentenceTransformer:
+    """Sentence transformer modelini yükle (ilk çağrıda indirir)."""
+    return SentenceTransformer(settings.embedding_model)
+
+
+@lru_cache(maxsize=1)
+def get_qdrant_client() -> QdrantClient:
+    return QdrantClient(host=settings.qdrant_host, port=settings.qdrant_port)
+
+
+# ── Encoding ─────────────────────────────────────────────────────────────────
+
+def encode_query(text: str) -> list[float]:
+    """Sorgu metnini vektöre dönüştür."""
+    model = get_embedding_model()
+    vector = model.encode(
+        text,
+        normalize_embeddings=True,   # cosine similarity için
+        show_progress_bar=False,
+    )
+    return vector.tolist()
+
+
+# ── Arama ────────────────────────────────────────────────────────────────────
+
+async def vector_search(
+    query: str,
+    lang: str = "en",
+    top_k: int = 50,
+) -> list[dict]:
+    """
+    Qdrant'ta semantic arama yapar.
+    Döner: [{"hadis_id": int, "score": float}, ...]
+    top_k: RRF fusion için geniş tutuluyor (varsayılan 50)
+    """
+    collection = (
+        settings.qdrant_collection_ar if lang == "ar"
+        else settings.qdrant_collection_en
+    )
+
+    client = get_qdrant_client()
+    query_vector = encode_query(query)
+
+    results = client.search(
+        collection_name=collection,
+        query_vector=query_vector,
+        limit=top_k,
+        with_payload=True,
+        score_threshold=0.0,
+    )
+
+    return [
+        {
+            "hadis_id": int(hit.id),
+            "score":    float(hit.score),
+        }
+        for hit in results
+    ]
+
+
+async def is_qdrant_ready(lang: str = "en") -> bool:
+    """Qdrant collection'ı hazır mı? (embedding'ler yüklenmiş mi?)"""
+    try:
+        col = (
+            settings.qdrant_collection_ar if lang == "ar"
+            else settings.qdrant_collection_en
+        )
+        client = get_qdrant_client()
+        info = client.get_collection(col)
+        return (info.points_count or 0) > 0
+    except Exception:
+        return False

@@ -82,6 +82,7 @@ class HadisOut(BaseModel):
 class SearchResponse(BaseModel):
     sorgu:    str
     dil:      str                  # "ar" | "en" | "auto"
+    mod:      str = "bm25_only"   # "hybrid" | "bm25_only"
     sayfa:    int
     toplam:   int
     sonuclar: list[HadisOut]

@@ -50,6 +50,15 @@ nlp hadith project/
 - [x] BM25 arama servisi yazıldı (MySQL FULLTEXT)
 - [x] Favoriler CRUD endpoint'leri yazıldı
 
+## ✅ Tamamlananlar (Faz 2)
+
+- [x] `scripts/build_embeddings.py` — Embedding üretimi ve Qdrant yükleme
+- [x] `services/vector_service.py` — Qdrant semantic arama
+- [x] `services/hybrid_service.py` — RRF Fusion (BM25 + Semantik)
+- [x] `/ara` endpoint'i hibrit moda geçirildi (Qdrant hazır değilse BM25 fallback)
+- [ ] ⏳ `paraphrase-multilingual-mpnet-base-v2` modeli indiriliyor (~1.1GB)
+- [ ] ⏳ 7277 × 2 = 14554 embedding Qdrant'a yükleniyor
+
 ---
 
 ## 🔧 Kurulum (İlk Kez)
