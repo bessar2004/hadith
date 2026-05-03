@@ -68,13 +68,15 @@
                   {{ t.heroSubtitle }}
                 </p>
 
-                <form class="mt-8" dir="ltr" @submit.prevent="submitSearch">
-                  <div class="search-shell">
-                    <select v-model="userSelectedMode" class="h-14 bg-transparent px-3 text-sm text-[#1F2F2A] outline-none border-r border-[#D8D0BE]">
+                <form class="mt-8 flex flex-col gap-3" dir="ltr" @submit.prevent="submitSearch">
+                  <div class="flex" :dir="isArabicUi ? 'rtl' : 'ltr'">
+                    <select v-model="userSelectedMode" class="h-10 rounded-lg border border-[#D8D0BE] bg-white px-4 text-sm text-[#1F2F2A] outline-none shadow-sm focus:border-[#315B45]">
                       <option value="hybrid">{{ t.searchModes.hybrid }}</option>
                       <option value="vector">{{ t.searchModes.vector }}</option>
                       <option value="bm25">{{ t.searchModes.bm25 }}</option>
                     </select>
+                  </div>
+                  <div class="search-shell">
                     <input
                       v-model="searchQuery"
                       type="search"
@@ -85,7 +87,7 @@
                     <button
                       type="submit"
                       :disabled="isLoading"
-                      class="h-12 rounded-lg bg-[#26493B] px-5 text-sm font-bold text-white transition hover:bg-[#1D3A2F] disabled:cursor-not-allowed disabled:opacity-60"
+                      class="h-12 shrink-0 rounded-lg bg-[#26493B] px-5 text-sm font-bold text-white transition hover:bg-[#1D3A2F] disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {{ isLoading ? t.searching : t.search }}
                     </button>
@@ -293,7 +295,7 @@
           <button type="button" class="transition hover:text-[#315B45]" @click="setUiLanguage(isArabicUi ? 'en' : 'ar')">{{ t.language }}</button>
         </div>
       </div>
-      <div class="mx-auto max-w-7xl border-t border-[#D9D1BF]/40 px-4 py-4 text-center text-base text-[#6C7B72] md:px-6">
+      <div class="mx-auto max-w-7xl border-t border-[#D9D1BF]/40 px-4 py-4 text-center text-sm text-[#6C7B72] md:px-6">
         Developed with ❤️ by Ibrahim Himidi & Beşşar Elcasim
       </div>
     </footer>

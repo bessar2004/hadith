@@ -1,5 +1,9 @@
 # 📖 HadithSearch — Hadis Arama Platformu
 
+<div align="center">
+  <img src="homepage.png" alt="HadithSearch Ana Ekran" width="800"/>
+</div>
+
 **HadithSearch**, Sahih Bukhari külliyatındaki **7.277 hadisi** Arapça ve İngilizce olarak arayabileceğiniz, modern bir web arama platformudur. Türkçe, Arapça ve İngilizce arayüz desteği ile hem masaüstü hem de mobil cihazlarda sorunsuz çalışır.
 
 ---
